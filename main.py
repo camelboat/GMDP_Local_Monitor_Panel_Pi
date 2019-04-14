@@ -3,17 +3,24 @@ import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
 
+import platform
+if platform.node() == 'raspberrypi':
+    use_device = True
+else:
+    use_device = False
 
-import RPi.GPIO as GPIO
+if use_device:
+    import RPi.GPIO as GPIO
+    # variables initialization
+    # Light pin assignment
+    PIN = 21
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIN, GPIO.OUT)
+
 from urllib.request import urlopen, Request
 import requests
 import json, time
 
-# variables initialization
-# Light pin assignment
-PIN = 21
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN, GPIO.OUT)
 
 # light 1 related variables
 light_1_initialize_flag = 0
@@ -37,6 +44,7 @@ baseURL_light_off = 'https://api.thingspeak.com/update?api_key=ZXYPJWBZXNHXGSZB&
 
 
 UPDATE_RATE = 500
+
 
 def uploading_light_running_time():
     global light_1_time_upload_now
@@ -82,10 +90,11 @@ def open_light():
     if light_1_status == 1:
         print("light is already on, do nothing")
     else:
-        light_1_status = 1
-        GPIO.output(PIN, GPIO.HIGH)
-        panel_status.set('10')
+        if use_device:
+            GPIO.output(PIN, GPIO.HIGH)
         print("light on")
+        light_1_status = 1
+        panel_status.set('10')
         light_1_start = time.time()
         if light_1_initialize_flag == 0:
             light_1_initialize_flag = 1
@@ -103,7 +112,8 @@ def close_light():
     if light_1_status == 0:
         print("light is already closed, do nothing")
     else:
-        GPIO.output(PIN, GPIO.LOW)
+        if use_device:
+            GPIO.output(PIN, GPIO.LOW)
         print("light off")
         light_1_status = 0
         panel_status.set('00')
@@ -157,7 +167,7 @@ class Application(tk.Frame):
         self.updater()
 
     def create_widgets(self):
-        self.master.title("GUI")
+        self.master.title("Room Local Monitor")
 
         # allowing the widget to take the full space of the root window
         self.pack(fill=BOTH, expand=1)
@@ -225,7 +235,8 @@ class Application(tk.Frame):
         global light_1_running
         global light_1_not_running
         if light_1_status == 1:
-            #GPIO.output(PIN, GPIO.LOW)
+            if use_device:
+                GPIO.output(PIN, GPIO.LOW)
             print("light off")
             light_1_status = 0
             light_1_off = time.time()

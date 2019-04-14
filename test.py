@@ -1,11 +1,18 @@
-import Tkinter as tk
+# for python 3.x use 'tkinter' rather than 'Tkinter'
+import tkinter as tk
+import time
 
-master = tk.Tk()
+class App():
+    def __init__(self):
+        self.root = tk.Tk()
+        self.label = tk.Label(text="")
+        self.label.pack()
+        self.update_clock()
+        self.root.mainloop()
 
-def my_mainloop():
-    print "Hello World!"
-    master.after(1000, my_mainloop)    
+    def update_clock(self):
+        now = time.strftime("%H:%M:%S")
+        self.label.configure(text=now)
+        self.root.after(1000, self.update_clock)
 
-master.after(1000, my_mainloop)
-
-master.mainloop()
+app=App()
