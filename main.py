@@ -1,18 +1,22 @@
-# Simple enough, just import everything from tkinter.
+# Import tkinter related stuff
 import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
+
+# Import other libs
 from urllib.request import urlopen, Request
 import requests
 import time
-#import json
+# import json
 
+# Check if it is running on raspberry pi
 import platform
 if platform.node() == 'raspberrypi':
     use_device = True
 else:
     use_device = False
 
+# Initialize GPIO if it is running on raspberry pi
 if use_device:
     import RPi.GPIO as GPIO
     # variables initialization
@@ -26,7 +30,7 @@ auto_upload_trigger = time.time()
 # light 1 related variables
 light_1_initialize_flag = 0
 
-current_temperature_setting = 20
+# current_temperature_setting = 20
 waiting_status = 0
 
 light_1_running = 0
@@ -136,13 +140,14 @@ def decode_light(command):
 def decode_ac(command):
     if command == "000":
         print("air-conditioner off")
-        temperature.set("Off")
+        temperature_setting.set("Off")
     elif command == "010":
         print("air-conditioner on")
     elif command[0] == "1":
-        current_temperature_setting = int(command[1:3])
-        temperature.set(str(current_temperature_setting) + u'\N{DEGREE SIGN}'+'C')
-        print("temperature setting is changed to: ", current_temperature_setting)
+        # current_temperature_setting = int(command[1:3])
+        # temperature_setting.set(str(current_temperature_setting) + u'\N{DEGREE SIGN}'+'C')
+        temperature_setting.set(str(int(command[1:3])) + u'\N{DEGREE SIGN}' + 'C')
+        print("temperature setting is changed to: " + temperature_setting.get())
     else:
         print("invalid AC instruction")
 
@@ -157,7 +162,7 @@ class Application(tk.Frame):
         self.load_3 = Image.open("Bosch_Control_Panel_Cropped_3.jpg")
         self.load_4 = Image.open("Bosch_Control_Panel_Cropped_4.jpg")
         self.render = ImageTk.PhotoImage(self.load_1)
-        self.img = Label(self, image=self.render, textvariable=temperature, compound=tk.CENTER)
+        self.img = Label(self, image=self.render, textvariable=temperature_setting, compound=tk.CENTER)
         self.img.image = self.render
         self.labelfont = labelfont = ('times', 100, 'bold')
         self.img.config(font=self.labelfont)
@@ -266,8 +271,8 @@ class Application(tk.Frame):
 
 
 root = tk.Tk()
-temperature = IntVar()
-temperature.set('Off')
+temperature_setting = StringVar()
+temperature_setting.set('Off')
 panel_status = IntVar()
 panel_status.set(0)
 root.title("monitor")
