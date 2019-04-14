@@ -4,7 +4,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 
 
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from urllib.request import urlopen, Request
 import requests
 import json, time
@@ -12,8 +12,8 @@ import json, time
 # variables initialization
 # Light pin assignment
 PIN = 21
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setup(PIN, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIN, GPIO.OUT)
 
 # light 1 related variables
 light_1_initialize_flag = 0
@@ -36,7 +36,7 @@ baseURL_light_running = 'https://api.thingspeak.com/update?api_key=ZXYPJWBZXNHXG
 baseURL_light_off = 'https://api.thingspeak.com/update?api_key=ZXYPJWBZXNHXGSZB&field2=0'
 
 
-UPDATE_RATE = 1000
+UPDATE_RATE = 500
 
 def uploading_light_running_time():
     global light_1_time_upload_now
@@ -83,7 +83,7 @@ def open_light():
         print("light is already on, do nothing")
     else:
         light_1_status = 1
-        #GPIO.output(PIN, GPIO.HIGH)
+        GPIO.output(PIN, GPIO.HIGH)
         panel_status.set('10')
         print("light on")
         light_1_start = time.time()
@@ -103,7 +103,7 @@ def close_light():
     if light_1_status == 0:
         print("light is already closed, do nothing")
     else:
-        #GPIO.output(PIN, GPIO.LOW)
+        GPIO.output(PIN, GPIO.LOW)
         print("light off")
         light_1_status = 0
         panel_status.set('00')
@@ -157,7 +157,6 @@ class Application(tk.Frame):
         self.updater()
 
     def create_widgets(self):
-        print(light_1_status)
         self.master.title("GUI")
 
         # allowing the widget to take the full space of the root window
@@ -214,7 +213,6 @@ class Application(tk.Frame):
         else:
             self.render = ImageTk.PhotoImage(self.load_4)
         self.img.config(image=self.render)
-        print("render is " + str(self.render))
 
     def updater(self):
         self.read_instruction()
