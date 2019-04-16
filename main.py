@@ -144,7 +144,7 @@ def open_light():
     else:
         if use_device:
             GPIO.output(PIN_1, GPIO.HIGH)
-        print("light on")
+        print("light #1 on")
         light_1_status = 1
         panel_status.set(str(light_1_status) + str(light_2_status))
         light_1_start = time.time()
