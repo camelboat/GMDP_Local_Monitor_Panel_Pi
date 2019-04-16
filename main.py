@@ -173,7 +173,7 @@ def open_light_2():
         light_2_start = time.time()
         if light_2_initialize_flag == 0:
             light_2_initialize_flag = 1
-            light_2_off = light_1_start
+            light_2_off = light_2_start
         light_2_not_running += (light_2_start - light_2_off)
         print('light #2\'s total off time is ' + str(round(light_2_not_running)) + ' seconds')
         uploading_light_off_time_2()
