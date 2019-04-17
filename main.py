@@ -270,12 +270,14 @@ class Application(tk.Frame):
 
         # allowing the widget to take the full space of the root window
         self.pack(fill=BOTH, expand=1)
-        menu = Menu(self.master)
-        self.master.config(menu=menu)
-        file = Menu(menu)
 
-        file.add_command(label="Exit", command=self.client_exit)
-        menu.add_cascade(label="Program", menu=file)
+        # Add menu
+        # menu = Menu(self.master)
+        # self.master.config(menu=menu)
+        # file = Menu(menu)
+        #
+        # file.add_command(label="Exit", command=self.client_exit)
+        # menu.add_cascade(label="Program", menu=file)
 
         self.img.pack()
 
